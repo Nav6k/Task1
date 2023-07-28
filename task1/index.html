@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Random String Generator</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: black; /* Black background */
+            font-family: Arial, sans-serif;
+        }
+
+        .content-box {
+            background-color: #f2f2f2;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            color: #333;
+            max-width: 400px;
+            width: 80%;
+        }
+
+        div {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        button {
+            margin-top: 10px;
+        }
+
+        #output {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .input-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .input-container label {
+            flex: 1;
+        }
+
+        .input-container input {
+            flex: 1;
+            margin-left: 5px;
+        }
+
+        #copyButton {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-box"> <!-- Grey content box -->
+        <div class="input-container">
+            <label for="length">Enter the desired length of the output string:</label>
+            <input type="number" id="length" />
+        </div>
+        <div class="input-container">
+            <label for="includeNumbers">Include numbers in the random string?</label>
+            <input type="checkbox" id="includeNumbers" />
+        </div>
+        <div class="input-container">
+            <label for="includeSymbols">Include symbols in the random string?</label>
+            <input type="checkbox" id="includeSymbols" />
+        </div>
+        <div class="input-container">
+            <label for="includeSmallAlphabets">Include small alphabets in the random string?</label>
+            <input type="checkbox" id="includeSmallAlphabets" />
+        </div>
+        <div class="input-container">
+            <label for="includeAlphabets">Include alphabets in the random string?</label>
+            <input type="checkbox" id="includeAlphabets" />
+        </div>
+        <button onclick="generateRandomString()">Generate Random String</button>
+        <button id="copyButton" onclick="copyToClipboard()">Copy to Clipboard</button>
+        <div id="output"></div>
+    </div>
+    <script>
+        function shuffleString(str) {
+            let shuffledStr = '';
+            while (str.length > 0) {
+                const randomIndex = Math.floor(Math.random() * str.length);
+                shuffledStr += str[randomIndex];
+                str = str.slice(0, randomIndex) + str.slice(randomIndex + 1);
+            }
+            return shuffledStr;
+        }
+
+        function generateRandomString() {
+            let desiredLength = parseInt(document.getElementById('length').value);
+            let includeNumbers = document.getElementById('includeNumbers').checked;
+            let includeSymbols = document.getElementById('includeSymbols').checked;
+            let includeSmallAlphabets = document.getElementById('includeSmallAlphabets').checked;
+            let includeAlphabets = document.getElementById('includeAlphabets').checked;
+
+            let numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+            let symbols = ['!', '@', '#', '$', '%', '^', '&', '*', '-', '+'];
+            let smallalphabets = 'abcdefghijklmnopqrstuvwxyz';
+            let alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            let validTypes = [];
+
+            if (includeNumbers) {
+                validTypes.push(0);
+            }
+
+            if (includeSymbols) {
+                validTypes.push(1);
+            }
+
+            if (includeSmallAlphabets) {
+                validTypes.push(2);
+            }
+
+            if (includeAlphabets) {
+                validTypes.push(3);
+            }
+
+            let res = '';
+
+            function getRandomElementFromArray(array) {
+                const randomIndex = Math.floor(Math.random() * array.length);
+                return array[randomIndex];
+            }
+
+            while (res.length < desiredLength) {
+                let randomType = validTypes[Math.floor(Math.random() * validTypes.length)];
+                switch (randomType) {
+                    case 0:
+                        res += getRandomElementFromArray(numbers);
+                        break;
+                    case 1:
+                        res += getRandomElementFromArray(symbols);
+                        break;
+                    case 2:
+                        res += getRandomElementFromArray(smallalphabets);
+                        break;
+                    case 3:
+                        res += getRandomElementFromArray(alphabets);
+                        break;
+                }
+            }
+
+            // Perform shuffling on the generated string
+            let shuffledRes = shuffleString(res);
+
+            // Display the shuffled output on the screen
+            document.getElementById('output').innerHTML = shuffledRes;
+        }
+
+        function copyToClipboard() {
+            const outputElement = document.getElementById('output');
+            const textToCopy = outputElement.innerText;
+
+            const textArea = document.createElement('textarea');
+            textArea.value = textToCopy;
+            document.body.appendChild(textArea);
+
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+
+            alert('Random string copied to clipboard!');
+        }
+    </script>
+</body>
+</html>
